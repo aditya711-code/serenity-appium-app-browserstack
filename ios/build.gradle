@@ -1,0 +1,51 @@
+plugins {
+    id 'java'
+    id 'com.browserstack.gradle-sdk' version "1.1.2" // sdk plugin
+}
+
+repositories { mavenCentral() }
+
+dependencies {
+    testImplementation "net.serenity-bdd:serenity-core:3.3.4"
+    testImplementation "net.serenity-bdd:serenity-cucumber:3.3.4"
+    testImplementation "net.serenity-bdd:serenity-screenplay:3.3.4"
+    testImplementation "net.serenity-bdd:serenity-screenplay-webdriver:3.3.4"
+    testImplementation "net.serenity-bdd:serenity-ensure:3.3.4"
+    testImplementation "io.cucumber:cucumber-junit-platform-engine:7.8.1"
+    testImplementation "org.junit.platform:junit-platform-suite:1.8.1"
+    testImplementation "org.junit.jupiter:junit-jupiter:5.9.1"
+    testImplementation "org.junit.vintage:junit-vintage-engine:5.8.2"
+    testImplementation "org.assertj:assertj-core:3.23.1"
+    implementation "org.seleniumhq.selenium:selenium-java:4.4.0"
+    implementation "io.appium:java-client:8.1.1"
+    implementation 'com.browserstack:browserstack-java-sdk:latest.release'
+}
+
+group = 'com.browserstack'
+version = '1.0-SNAPSHOT'
+description = 'serenity-browserstack'
+sourceCompatibility = '1.8'
+
+def browserstackSDKArtifact = configurations.compileClasspath.resolvedConfiguration.resolvedArtifacts.find { it.name == 'browserstack-java-sdk' }
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+tasks.withType(Test) {
+    systemProperties = System.properties
+    jvmArgs += "-javaagent:${browserstackSDKArtifact.file}"
+}
+
+task sampleTest(type: Test) {
+    dependsOn cleanTest
+    include '/com/browserstack/cucumber/SampleTest.**'
+    useJUnitPlatform()
+    jvmArgs "-javaagent:${configurations.runtimeClasspath.files.find { it.name.contains('browserstack-java-sdk') }}"
+}
+task sampleLocalTest(type: Test) {
+    dependsOn cleanTest
+    include '/com/browserstack/cucumber/LocalTest.**'
+    useJUnitPlatform()
+    jvmArgs "-javaagent:${configurations.runtimeClasspath.files.find { it.name.contains('browserstack-java-sdk') }}"
+}
