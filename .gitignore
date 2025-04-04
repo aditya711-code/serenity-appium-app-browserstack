@@ -5,3 +5,8 @@ local.log
 */*/logs
 *.iml
 logs/
+bstack_*
+build
+.gradle
+gradle
+gradlew*
