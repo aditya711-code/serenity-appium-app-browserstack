@@ -24,6 +24,7 @@ buildIdentifier: '#${BUILD_NUMBER}' # Supports strings along with either/both ${
 # This property is needed to send test context to BrowserStack (test name, status)
 framework: serenity
 
+
 source: serenity:appium-sample-sdk:v1.1
 
 app: ./WikipediaSample.apk
